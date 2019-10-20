@@ -6,7 +6,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -23,53 +22,53 @@ public class User {
     private Integer id;
 
     @Column(name = "UUID")
-    @Max(200)
+//    @Max(200)
     private String uuid;
 
     @Column(name = "firstname")
     @NotNull
-    @Max(30)
+//    @Max(30)
     private String firstName;
 
     @Column(name = "lastname")
     @NotNull
-    @Max(30)
+//    @Max(30)
     private String lastName;
 
     @Column(name = "username")
     @NotNull
-    @Max(30)
+//    @Max(30)
     private String userName;
 
     @Column
     @NotNull
-    @Max(50)
+//    @Max(50)
     private String email;
 
     @Column
     @NotNull
-    @Max(255)
+//    @Max(255)
     private String password;
 
     @Column
     @NotNull
-    @Max(200)
+//    @Max(200)
     private String salt;
 
     @Column
-    @Max(30)
+//    @Max(30)
     private String country;
 
     @Column(name = "aboutme")
-    @Max(50)
+//    @Max(50)
     private String aboutMe;
 
     @Column
-    @Max(30)
+//    @Max(30)
     private String role;
 
     @Column
-    @Max(30)
+//    @Max(30)
     private String contactnumber;
 
     @Column

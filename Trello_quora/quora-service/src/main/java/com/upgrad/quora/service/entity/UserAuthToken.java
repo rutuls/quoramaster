@@ -6,9 +6,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.time.ZonedDateTime;
 
 @Entity
@@ -21,7 +19,7 @@ public class UserAuthToken {
     private Integer id;
 
     @Column(name = "UUID")
-    @Max(200)
+//    @Max(200)
     private String uuid;
 
     @ManyToOne
@@ -30,7 +28,7 @@ public class UserAuthToken {
 
     @Column(name = "ACCESS_TOKEN")
     @NotNull
-    @Size(max = 500)
+//    @Size(max = 500)
     private String accessToken;
 
     @Column(name = "LOGIN_AT")
