@@ -1,7 +1,10 @@
 package com.upgrad.quora.service.DAO;
 
 import com.upgrad.quora.service.entity.User;
+import com.upgrad.quora.service.entity.UserAuthToken;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -13,6 +16,7 @@ public class UserDAO {
     @PersistenceContext
     private EntityManager manager;
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public User CreateUser(User user){
         manager.persist(user);
         return user;
@@ -32,6 +36,11 @@ public class UserDAO {
         }catch (NoResultException r){
             return null;
         }
+    }
+
+    public UserAuthToken createToken(UserAuthToken token){
+        manager.persist(token);
+        return token;
     }
 
 }

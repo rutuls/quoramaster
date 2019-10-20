@@ -4,7 +4,6 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -14,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "USERS")
 @NamedQueries({
         @NamedQuery(name = "byUserName",query = "select u from User u where u.userName =:userName"),
-        @NamedQuery(name = "byEmail",query = "select u from User where u.email =:email")
+        @NamedQuery(name = "byEmail",query = "select u from User u where u.email =:email")
 })
 public class User {
 
@@ -27,26 +26,24 @@ public class User {
     @Max(200)
     private String uuid;
 
-    @Column
+    @Column(name = "firstname")
     @NotNull
     @Max(30)
     private String firstName;
 
-    @Column
+    @Column(name = "lastname")
     @NotNull
     @Max(30)
     private String lastName;
 
-    @Column
+    @Column(name = "username")
     @NotNull
     @Max(30)
-    @UniqueElements
     private String userName;
 
     @Column
     @NotNull
     @Max(50)
-    @UniqueElements
     private String email;
 
     @Column
@@ -63,7 +60,7 @@ public class User {
     @Max(30)
     private String country;
 
-    @Column
+    @Column(name = "aboutme")
     @Max(50)
     private String aboutMe;
 
