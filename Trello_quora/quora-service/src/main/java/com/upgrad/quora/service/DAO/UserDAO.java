@@ -43,4 +43,16 @@ public class UserDAO {
         return token;
     }
 
+    public UserAuthToken fromJwtToken(final String token){
+        try {
+            return manager.createNamedQuery("byAuthToken",UserAuthToken.class).setParameter("accessToken",token).getSingleResult();
+        }catch (NoResultException r){
+            return null;
+        }
+    }
+
+    public void update(UserAuthToken userAuthToken){
+        manager.merge(userAuthToken);
+    }
+
 }
