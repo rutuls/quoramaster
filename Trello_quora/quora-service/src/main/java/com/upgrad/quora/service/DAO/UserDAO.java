@@ -55,4 +55,17 @@ public class UserDAO {
         manager.merge(userAuthToken);
     }
 
+    public User userFromUuid(String uuid){
+        try {
+            return manager.createNamedQuery("byUuid",User.class).setParameter("uuid",uuid).getSingleResult();
+        } catch (NoResultException r){
+            return null;
+        }
+    }
+
+    public User deleteUser(User user){
+        manager.remove(user);
+        return user;
+    }
+
 }

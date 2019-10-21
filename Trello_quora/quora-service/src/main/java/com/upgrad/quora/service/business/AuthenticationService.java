@@ -5,6 +5,7 @@ import com.upgrad.quora.service.entity.User;
 import com.upgrad.quora.service.entity.UserAuthToken;
 import com.upgrad.quora.service.exception.AuthenticationFailedException;
 import com.upgrad.quora.service.exception.SignOutRestrictedException;
+import com.upgrad.quora.service.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -62,6 +63,41 @@ public class AuthenticationService {
     @Transactional(propagation = Propagation.REQUIRED)
     public void update(UserAuthToken userAuthToken){
         repo.update(userAuthToken);
+    }
+
+    public User getUser(String uuid,String token) throws AuthenticationFailedException, UserNotFoundException {
+        UserAuthToken authToken = repo.fromJwtToken(token);
+        User user = repo.userFromUuid(uuid);
+        if(authToken == null){
+            throw new AuthenticationFailedException("ATHR-001","User has not signed in");
+        }
+        if(user == null){
+            throw new UserNotFoundException("USR-001","User with entered uuid does not exist");
+        }
+        if(authToken.getLogoutAt() != null){
+            throw new AuthenticationFailedException("ATHR-002","User is signed out.Sign in first to get user details");
+        }
+
+        return user;
+    }
+
+    public User deleteUser(String uuid,String token) throws UserNotFoundException, AuthenticationFailedException {
+        UserAuthToken authToken = repo.fromJwtToken(token);
+        User user = repo.userFromUuid(uuid);
+        if(authToken == null){
+            throw new AuthenticationFailedException("ATHR-001","User has not signed in");
+        }
+        if(user == null){
+            throw new UserNotFoundException("USR-001","User with entered uuid does not exist");
+        }
+        if(authToken.getLogoutAt() != null){
+            throw new AuthenticationFailedException("ATHR-002","User is signed out");
+        }
+        if(user.getRole().equals("nonadmin")){
+            throw new AuthenticationFailedException("ATHR-003","Unauthorized Access, Entered user is not an admin");
+        }
+
+        return repo.deleteUser(user);
     }
 
 }

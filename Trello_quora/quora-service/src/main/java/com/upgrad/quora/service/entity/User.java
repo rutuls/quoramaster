@@ -12,7 +12,8 @@ import javax.validation.constraints.NotNull;
 @Table(name = "USERS")
 @NamedQueries({
         @NamedQuery(name = "byUserName",query = "select u from User u where u.userName =:userName"),
-        @NamedQuery(name = "byEmail",query = "select u from User u where u.email =:email")
+        @NamedQuery(name = "byEmail",query = "select u from User u where u.email =:email"),
+        @NamedQuery(name = "byUuid", query = "select u from User u where u.uuid =:uuid")
 })
 public class User {
 
