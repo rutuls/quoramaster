@@ -23,6 +23,7 @@ public class AuthenticationService {
     @Autowired
     private PasswordCryptographyProvider cryptographyProvider;
 
+    //logic for logging in an user by creating a jwt token and storing it into the db
     @Transactional(propagation = Propagation.REQUIRED)
     public UserAuthToken authenticate(final String userName, final String password) throws AuthenticationFailedException {
         User user = repo.getUserByUserName(userName);
@@ -31,7 +32,7 @@ public class AuthenticationService {
         }
         String encryptedPassword = cryptographyProvider.encrypt(password,user.getSalt());
         if(encryptedPassword.equals(user.getPassword())){
-            JwtTokenProvider jwt = new JwtTokenProvider(encryptedPassword);
+            JwtTokenProvider jwt = new JwtTokenProvider(encryptedPassword);// creating a jwt token for authentication
             UserAuthToken userAuthToken = new UserAuthToken();
             userAuthToken.setUser(user);
             userAuthToken.setUuid(UUID.randomUUID().toString());
@@ -51,6 +52,7 @@ public class AuthenticationService {
         }
     }
 
+    // logic for signing out user
     public UserAuthToken verify(final String token) throws SignOutRestrictedException {
         UserAuthToken authToken = repo.fromJwtToken(token);
         if(authToken == null){
@@ -60,6 +62,7 @@ public class AuthenticationService {
         return authToken;
     }
 
+    // logic for logout process
     @Transactional(propagation = Propagation.REQUIRED)
     public void update(UserAuthToken userAuthToken){
         repo.update(userAuthToken);
@@ -81,6 +84,7 @@ public class AuthenticationService {
         return user;
     }
 
+    //logic for deleting user
     public User deleteUser(String uuid,String token) throws UserNotFoundException, AuthenticationFailedException {
         UserAuthToken authToken = repo.fromJwtToken(token);
         User user = repo.userFromUuid(uuid);

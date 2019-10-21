@@ -15,6 +15,7 @@ public class UserService {
     @Autowired
     private PasswordCryptographyProvider cryptographyProvider;
 
+    //logic for creating and storing new user
     public User createUser(User user) throws SignUpRestrictedException {
         if(repo.getUserByEmail(user.getEmail()) != null){
             throw new SignUpRestrictedException("SGR-002","This user has already been registered, try with any other emailId");
