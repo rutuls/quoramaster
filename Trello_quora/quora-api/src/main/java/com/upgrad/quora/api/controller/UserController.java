@@ -74,7 +74,7 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST,path = "user/signout",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<SignoutResponse> signout(@RequestHeader("autharization") final String autharization) throws SignOutRestrictedException {
+    public ResponseEntity<SignoutResponse> signout(@RequestHeader("authorization") final String autharization) throws SignOutRestrictedException {
         UserAuthToken token = authenticationService.verify(autharization);
         token.setLogoutAt(ZonedDateTime.now());
         authenticationService.update(token);
