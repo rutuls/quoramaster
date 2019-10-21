@@ -63,6 +63,7 @@ public class UserDAO {
         }
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public User deleteUser(User user){
         manager.remove(user);
         return user;

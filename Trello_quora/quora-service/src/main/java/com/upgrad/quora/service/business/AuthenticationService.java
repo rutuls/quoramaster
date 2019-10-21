@@ -93,7 +93,7 @@ public class AuthenticationService {
         if(authToken.getLogoutAt() != null){
             throw new AuthenticationFailedException("ATHR-002","User is signed out");
         }
-        if(user.getRole().equals("nonadmin")){
+        if(authToken.getUser().getRole().equals("nonadmin")){
             throw new AuthenticationFailedException("ATHR-003","Unauthorized Access, Entered user is not an admin");
         }
 

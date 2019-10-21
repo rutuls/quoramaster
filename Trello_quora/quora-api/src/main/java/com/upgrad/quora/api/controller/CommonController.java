@@ -20,7 +20,7 @@ public class CommonController {
     private AuthenticationService authenticationService;
 
     @RequestMapping(method = RequestMethod.GET,path = "userprofile/{userId}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<UserDetailsResponse> getUser(@PathVariable("userId") String uuid, @RequestHeader("autharization") final String autharization) throws AuthenticationFailedException, UserNotFoundException {
+    public ResponseEntity<UserDetailsResponse> getUser(@PathVariable("userId") String uuid, @RequestHeader("authorization") final String autharization) throws AuthenticationFailedException, UserNotFoundException {
         User user = authenticationService.getUser(uuid,autharization);
 
         UserDetailsResponse response = new UserDetailsResponse().firstName(user.getFirstName()).lastName(user.getLastName())

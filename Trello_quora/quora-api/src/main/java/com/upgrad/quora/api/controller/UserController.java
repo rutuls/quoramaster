@@ -48,6 +48,7 @@ public class UserController {
         user.setAboutMe(request.getAboutMe());
         user.setDob(request.getDob());
         user.setContactnumber(request.getContactNumber());
+        user.setRole("nonadmin");
         final User got = service.createUser(user);
         SignupUserResponse response = new SignupUserResponse().id(got.getUuid()).status("USER SUCCESSFULLY REGISTERED");
         return new ResponseEntity<SignupUserResponse>(response, HttpStatus.CREATED);
