@@ -4,17 +4,16 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "USERS")
 @NamedQueries({
         @NamedQuery(name = "byUserName",query = "select u from User u where u.userName =:userName"),
-        @NamedQuery(name = "byEmail",query = "select u from User where u.email =:email")
+        @NamedQuery(name = "byEmail",query = "select u from User u where u.email =:email"),
+        @NamedQuery(name = "byUuid", query = "select u from User u where u.uuid =:uuid")
 })
 public class User {
 
@@ -24,55 +23,53 @@ public class User {
     private Integer id;
 
     @Column(name = "UUID")
-    @Max(200)
+//    @Max(200)
     private String uuid;
 
-    @Column
+    @Column(name = "firstname")
     @NotNull
-    @Max(30)
+//    @Max(30)
     private String firstName;
 
-    @Column
+    @Column(name = "lastname")
     @NotNull
-    @Max(30)
+//    @Max(30)
     private String lastName;
 
-    @Column
+    @Column(name = "username")
     @NotNull
-    @Max(30)
-    @UniqueElements
+//    @Max(30)
     private String userName;
 
     @Column
     @NotNull
-    @Max(50)
-    @UniqueElements
+//    @Max(50)
     private String email;
 
     @Column
     @NotNull
-    @Max(255)
+//    @Max(255)
     private String password;
 
     @Column
     @NotNull
-    @Max(200)
+//    @Max(200)
     private String salt;
 
     @Column
-    @Max(30)
+//    @Max(30)
     private String country;
 
-    @Column
-    @Max(50)
+    @Column(name = "aboutme")
+//    @Max(50)
     private String aboutMe;
 
     @Column
-    @Max(30)
+//    @Max(30)
     private String role;
 
     @Column
-    @Max(30)
+//    @Max(30)
     private String contactnumber;
 
     @Column
