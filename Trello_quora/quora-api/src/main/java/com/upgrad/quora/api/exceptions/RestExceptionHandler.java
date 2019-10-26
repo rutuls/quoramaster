@@ -2,6 +2,7 @@ package com.upgrad.quora.api.exceptions;
 
 import com.upgrad.quora.api.models.ErrorResponse;
 import com.upgrad.quora.service.exception.AuthenticationFailedException;
+import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.SignOutRestrictedException;
 import com.upgrad.quora.service.exception.SignUpRestrictedException;
 import com.upgrad.quora.service.exception.UserNotFoundException;
@@ -16,22 +17,28 @@ import org.springframework.web.context.request.WebRequest;
 public class RestExceptionHandler {
 
     @ExceptionHandler(SignUpRestrictedException.class)
-    public ResponseEntity<ErrorResponse> userSignupError(SignUpRestrictedException r, WebRequest request){
+    public ResponseEntity<ErrorResponse> userSignupError(SignUpRestrictedException r, WebRequest request) {
         return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(r.getCode()).message(r.getErrorMessage()), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(SignOutRestrictedException.class)
-    public ResponseEntity<ErrorResponse> userSignupError(SignOutRestrictedException r, WebRequest request){
+    public ResponseEntity<ErrorResponse> userSignupError(SignOutRestrictedException r, WebRequest request) {
         return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(r.getCode()).message(r.getErrorMessage()), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(AuthenticationFailedException.class)
-    public ResponseEntity<ErrorResponse> failedSignin(AuthenticationFailedException r,WebRequest request){
+    public ResponseEntity<ErrorResponse> failedSignin(AuthenticationFailedException r, WebRequest request) {
         return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(r.getCode()).message(r.getErrorMessage()), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> failedRetrival(UserNotFoundException r,WebRequest request){
+    public ResponseEntity<ErrorResponse> failedRetrival(UserNotFoundException r, WebRequest request) {
         return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(r.getCode()).message(r.getErrorMessage()), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(AuthorizationFailedException.class)
+    public ResponseEntity<ErrorResponse> authorizationFailedException(AuthorizationFailedException exc, WebRequest request) {
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()), HttpStatus.UNAUTHORIZED);
+    }
 }
+
