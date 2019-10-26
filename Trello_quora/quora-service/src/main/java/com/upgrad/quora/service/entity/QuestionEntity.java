@@ -6,6 +6,10 @@ import java.time.ZonedDateTime;
 
 @Entity
 @Table(name = "question")
+@NamedQueries({
+        @NamedQuery(name = "allQuestions", query = "select q from QuestionEntity q"),
+        @NamedQuery(name = "questionById", query = "select q from QuestionEntity q where q.id =:id")
+})
 public class QuestionEntity {
     @Id
     @Column(name = "ID")
