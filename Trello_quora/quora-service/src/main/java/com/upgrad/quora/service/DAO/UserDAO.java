@@ -50,7 +50,7 @@ public class UserDAO {
     //retrieving based on jwt token
     public UserAuthToken fromJwtToken(final String token){
         try {
-            return manager.createNamedQuery("byAuthToken",UserAuthToken.class).setParameter("accessToken",token).getSingleResult();
+            return manager.createNamedQuery("userAuthTokenByAccessToken",UserAuthToken.class).setParameter("accessToken",token).getSingleResult();
         }catch (NoResultException r){
             return null;
         }
