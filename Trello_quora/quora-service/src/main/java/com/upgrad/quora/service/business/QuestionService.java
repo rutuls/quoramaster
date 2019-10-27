@@ -1,10 +1,13 @@
 package com.upgrad.quora.service.business;
 
 import com.upgrad.quora.service.DAO.QuestionDao;
+import com.upgrad.quora.service.DAO.UserDAO;
 import com.upgrad.quora.service.entity.QuestionEntity;
+import com.upgrad.quora.service.entity.User;
 import com.upgrad.quora.service.entity.UserAuthToken;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
+import com.upgrad.quora.service.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -18,6 +21,9 @@ public class QuestionService {
     @Autowired
     QuestionDao questionDao;
 
+    @Autowired
+    UserDAO userDao;
+
     @Transactional(propagation = Propagation.REQUIRED)
     public QuestionEntity createQuestion(QuestionEntity questionEntity, String authorizationToken) throws AuthorizationFailedException {
         UserAuthToken userAuthToken = questionDao.getUserAuthToken(authorizationToken);
@@ -30,7 +36,7 @@ public class QuestionService {
         return questionDao.createQuestion(questionEntity);
     }
 
-    public List<QuestionEntity> getAllQuestion(String authorization) throws AuthorizationFailedException {
+    public List<QuestionEntity> getAllQuestions(String authorization) throws AuthorizationFailedException {
         UserAuthToken userAuthToken = questionDao.getUserAuthToken(authorization);
         if (userAuthToken == null) {
             throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
@@ -38,6 +44,19 @@ public class QuestionService {
             throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get all questions");
         }
         return questionDao.getAllQuestions(authorization);
+    }
+
+    public List<QuestionEntity> getAllQuestionsByUser(String userId, String authorization) throws AuthorizationFailedException, UserNotFoundException {
+        UserAuthToken userAuthToken = questionDao.getUserAuthToken(authorization);
+        User user = userDao.userFromUuid(userId);
+        if (userAuthToken == null) {
+            throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+        } else if (userAuthToken.getLogoutAt() != null) {
+            throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get all questions");
+        } else if (user == null) {
+            throw new UserNotFoundException("USR-001", "User with entered uuid whose question details are to be seen does not exist");
+        }
+        return questionDao.getAllQuestionsByUser(userId, authorization);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
