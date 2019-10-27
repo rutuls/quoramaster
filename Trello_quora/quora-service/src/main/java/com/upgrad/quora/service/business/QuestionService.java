@@ -43,7 +43,7 @@ public class QuestionService {
     @Transactional(propagation = Propagation.REQUIRED)
     public QuestionEntity editQuestionContent(final QuestionEntity questionEntity, String authorization) throws AuthorizationFailedException, InvalidQuestionException {
         UserAuthToken userAuthToken = questionDao.getUserAuthToken(authorization);
-        QuestionEntity existingQuestion = questionDao.getQuestionById(questionEntity.getId());
+        QuestionEntity existingQuestion = questionDao.getQuestionById(questionEntity.getUuid());
         if (userAuthToken == null) {
             throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
         } else if (userAuthToken.getLogoutAt() != null) {
@@ -57,5 +57,21 @@ public class QuestionService {
         questionEntity.setDate(existingQuestion.getDate());
         questionEntity.setUser(existingQuestion.getUser());
         return questionDao.editQuestionContent(questionEntity);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public QuestionEntity deleteQuestion(String questionUuid, String authorization) throws AuthorizationFailedException, InvalidQuestionException {
+        UserAuthToken userAuthToken = questionDao.getUserAuthToken(authorization);
+        QuestionEntity questionEntity = questionDao.getQuestionById(questionUuid);
+        if (userAuthToken == null) {
+            throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+        } else if (questionEntity == null) {
+            throw new InvalidQuestionException("QUES-001", "Entered question uuid does not exist");
+        } else if (userAuthToken.getLogoutAt() != null) {
+            throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to delete a question");
+        } else if (userAuthToken.getUser().getId() != questionEntity.getUser().getId() && !userAuthToken.getUser().getRole().equals("admin")) {
+            throw new AuthorizationFailedException("ATHR-003", "Only the question owner or admin can delete the question");
+        }
+        return questionDao.deleteQuestion(questionEntity);
     }
 }
