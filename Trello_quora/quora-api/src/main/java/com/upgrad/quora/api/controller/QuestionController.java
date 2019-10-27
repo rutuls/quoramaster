@@ -47,12 +47,19 @@ public class QuestionController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, path = "/question/edit/{questionId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<QuestionResponse> editQuestionContent(final QuestionRequest questionRequest, @PathVariable("questionId") final int questionId, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, InvalidQuestionException {
+    public ResponseEntity<QuestionResponse> editQuestionContent(final QuestionRequest questionRequest, @PathVariable("questionId") final String questionUuid, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, InvalidQuestionException {
         QuestionEntity questionEntity = new QuestionEntity();
-        questionEntity.setId(questionId);
+        questionEntity.setUuid(questionUuid);
         questionEntity.setContent(questionRequest.getContent());
         final QuestionEntity editQuestionEntity = questionService.editQuestionContent(questionEntity, authorization);
         QuestionResponse questionResponse = new QuestionResponse().id(editQuestionEntity.getUuid()).status("QUESTION EDITED");
+        return new ResponseEntity<QuestionResponse>(questionResponse, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, path = "/question/delete/{questionId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<QuestionResponse> deleteQuestion(@PathVariable("questionId") String questionUuid, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, InvalidQuestionException {
+        final QuestionEntity questionEntity = questionService.deleteQuestion(questionUuid, authorization);
+        QuestionResponse questionResponse = new QuestionResponse().id(questionEntity.getUuid()).status("QUESTION DELETED");
         return new ResponseEntity<QuestionResponse>(questionResponse, HttpStatus.OK);
     }
 }
