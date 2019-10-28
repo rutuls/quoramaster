@@ -5,6 +5,7 @@ import com.upgrad.quora.service.DAO.QuestionDao;
 import com.upgrad.quora.service.entity.AnswerEntity;
 import com.upgrad.quora.service.entity.QuestionEntity;
 import com.upgrad.quora.service.entity.UserAuthToken;
+import com.upgrad.quora.service.exception.AnswerNotFoundException;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +35,26 @@ public class AnswerService {
         answerEntity.setUser(userAuthToken.getUser());
         answerEntity.setQuestionEntity(questionEntity);
         return answerDao.createAnswer(answerEntity);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public AnswerEntity editAnswerContent(final AnswerEntity answerEntity, String authorization) throws AuthorizationFailedException, AnswerNotFoundException {
+        UserAuthToken userAuthToken = questionDao.getUserAuthToken(authorization);
+        AnswerEntity existingAnswer = answerDao.getAnswerById(answerEntity.getUuid());
+        if (userAuthToken == null) {
+            throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+        } else if (existingAnswer == null) {
+            throw new AnswerNotFoundException("ANS-001", "Entered answer uuid does not exist");
+        } else if (userAuthToken.getLogoutAt() != null) {
+            throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get all answers");
+        } else if (userAuthToken.getUser().getId() != existingAnswer.getUser().getId()) {
+            throw new AuthorizationFailedException("ATHR-003", "Only the answer owner can edit the answer");
+        }
+        answerEntity.setId(existingAnswer.getId());
+        answerEntity.setUuid(existingAnswer.getUuid());
+        answerEntity.setDate(existingAnswer.getDate());
+        answerEntity.setUser(existingAnswer.getUser());
+        answerEntity.setQuestionEntity(existingAnswer.getQuestionEntity());
+        return answerDao.editAnswerContent(answerEntity);
     }
 }
