@@ -60,6 +60,7 @@ public class AnswerService {
         return answerDao.editAnswerContent(answerEntity);
     }
 
+    //to delete a particular answer
     @Transactional(propagation = Propagation.REQUIRED)
     public AnswerEntity deleteAnswer(final String uuid,String authorization) throws AuthorizationFailedException, AnswerNotFoundException {
         UserAuthToken userAuthToken = questionDao.getUserAuthToken(authorization);
@@ -75,7 +76,7 @@ public class AnswerService {
         }
         else {
             if(userAuthToken.getUser().getRole() == "admin"| existingAnswer.getUser() == userAuthToken.getUser()){
-                return answerDao.deleteAnswer(existingAnswer);
+                return answerDao.deleteAnswer(existingAnswer);//calling delete
             }
             else {
                 throw new AuthorizationFailedException("ATHR-003","Only the answer owner or admin can delete the answer");
@@ -84,6 +85,7 @@ public class AnswerService {
 
     }
 
+    //gets all the answers for a particular question
     @Transactional(propagation = Propagation.REQUIRED)
     public List<AnswerEntity> getAllAnswer(final String uuid,String authorization) throws AuthorizationFailedException, InvalidQuestionException {
         UserAuthToken userAuthToken = questionDao.getUserAuthToken(authorization);
@@ -97,6 +99,6 @@ public class AnswerService {
         if (questionEntity == null){
             throw new InvalidQuestionException("QUES-001","The question with entered uuid whose details are to be seen does not exist");
         }
-        return answerDao.getAllAnswers(questionEntity);
+        return answerDao.getAllAnswers(questionEntity); //returning list of answers
     }
 }

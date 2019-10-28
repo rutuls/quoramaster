@@ -32,11 +32,13 @@ public class AnswerDao {
         return entityManager.merge(answerEntity);
     }
 
+    //deletes an answer
     public AnswerEntity deleteAnswer(AnswerEntity answerEntity){
         entityManager.remove(answerEntity);
         return answerEntity;
     }
 
+    //query to get a list all answers for a particular question
     public List<AnswerEntity> getAllAnswers(QuestionEntity questionEntity){
         try {
             return entityManager.createNamedQuery("getAll",AnswerEntity.class).setParameter("questionEntity",questionEntity).getResultList();
