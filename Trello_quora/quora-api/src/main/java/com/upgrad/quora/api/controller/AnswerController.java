@@ -44,4 +44,11 @@ public class AnswerController {
         AnswerResponse answerResponse = new AnswerResponse().id(editAnswerContent.getUuid()).status("ANSWER EDITED");
         return new ResponseEntity<AnswerResponse>(answerResponse, HttpStatus.OK);
     }
+
+    @RequestMapping(method = RequestMethod.DELETE,path = "/answer/delete/{answerId}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<AnswerResponse> deleteAnswer(@PathVariable("answerId") final String answerUuid, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, AnswerNotFoundException {
+        AnswerEntity answerEntity = answerService.deleteAnswer(answerUuid,authorization);
+        AnswerResponse answerResponse = new AnswerResponse().id(answerEntity.getUuid()).status("ANSWER DELETED");
+        return new ResponseEntity<AnswerResponse>(answerResponse, HttpStatus.OK);
+    }
 }

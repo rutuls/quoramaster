@@ -1,0 +1,10 @@
+-------------------------------------------------------------------------------
+Test set: com.upgrad.quora.api.controller.QuestionControllerTest
+-------------------------------------------------------------------------------
+Tests run: 16, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.342 s <<< FAILURE! - in com.upgrad.quora.api.controller.QuestionControllerTest
+editNonExistingQuestion(com.upgrad.quora.api.controller.QuestionControllerTest)  Time elapsed: 0.036 s  <<< ERROR!
+org.springframework.web.util.NestedServletException: Request processing failed; nested exception is java.lang.NullPointerException
+	at com.upgrad.quora.api.controller.QuestionControllerTest.editNonExistingQuestion(QuestionControllerTest.java:93)
+Caused by: java.lang.NullPointerException
+	at com.upgrad.quora.api.controller.QuestionControllerTest.editNonExistingQuestion(QuestionControllerTest.java:93)
+
