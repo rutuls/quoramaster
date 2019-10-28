@@ -72,6 +72,7 @@ public class QuestionService {
         } else if (existingQuestion == null) {
             throw new InvalidQuestionException("QUES-001", "Entered question uuid does not exist");
         }
+        questionEntity.setId(existingQuestion.getId());
         questionEntity.setUuid(existingQuestion.getUuid());
         questionEntity.setDate(existingQuestion.getDate());
         questionEntity.setUser(existingQuestion.getUser());
