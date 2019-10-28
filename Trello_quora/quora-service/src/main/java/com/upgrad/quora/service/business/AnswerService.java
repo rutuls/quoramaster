@@ -23,6 +23,9 @@ public class AnswerService {
     @Autowired
     private QuestionDao questionDao;
 
+    // Service function for creating answer based on answer entity, question uuid and jwt token
+    // This verifies few checks related to invalid question id and authorization
+    // If user os authorized and valid question, it will in turn call Repository layer DAO function
     @Transactional(propagation = Propagation.REQUIRED)
     public AnswerEntity createAnswer(AnswerEntity answerEntity, String questionUuid, String authorization) throws InvalidQuestionException, AuthorizationFailedException {
         UserAuthToken userAuthToken = questionDao.getUserAuthToken(authorization);
@@ -39,6 +42,7 @@ public class AnswerService {
         return answerDao.createAnswer(answerEntity);
     }
 
+    // Service function for editing the answer content. It verifies few checks authorization or invalid answer.
     @Transactional(propagation = Propagation.REQUIRED)
     public AnswerEntity editAnswerContent(final AnswerEntity answerEntity, String authorization) throws AuthorizationFailedException, AnswerNotFoundException {
         UserAuthToken userAuthToken = questionDao.getUserAuthToken(authorization);
@@ -60,6 +64,7 @@ public class AnswerService {
         return answerDao.editAnswerContent(answerEntity);
     }
 
+    // Service function for deleting the answer based on uuid. and jwt token.
     @Transactional(propagation = Propagation.REQUIRED)
     public AnswerEntity deleteAnswer(final String uuid, String authorization) throws AuthorizationFailedException, AnswerNotFoundException {
         UserAuthToken userAuthToken = questionDao.getUserAuthToken(authorization);
@@ -81,6 +86,7 @@ public class AnswerService {
         }
     }
 
+    // Service for getting all questions based on question uuid. In turn it will call repository function for database query
     @Transactional(propagation = Propagation.REQUIRED)
     public List<AnswerEntity> getAllAnswersToQuestion(final String uuid, String authorization) throws AuthorizationFailedException, InvalidQuestionException {
         UserAuthToken userAuthToken = questionDao.getUserAuthToken(authorization);

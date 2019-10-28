@@ -24,6 +24,7 @@ public class QuestionService {
     @Autowired
     UserDAO userDao;
 
+    // Service methods for creating question. It verifies authorization checks and if user is authorized it calls repository layer to insert value in db.
     @Transactional(propagation = Propagation.REQUIRED)
     public QuestionEntity createQuestion(QuestionEntity questionEntity, String authorizationToken) throws AuthorizationFailedException {
         UserAuthToken userAuthToken = questionDao.getUserAuthToken(authorizationToken);
@@ -36,6 +37,7 @@ public class QuestionService {
         return questionDao.createQuestion(questionEntity);
     }
 
+    // Service func for getting all questions if user is authorized
     public List<QuestionEntity> getAllQuestions(String authorization) throws AuthorizationFailedException {
         UserAuthToken userAuthToken = questionDao.getUserAuthToken(authorization);
         if (userAuthToken == null) {
@@ -46,6 +48,7 @@ public class QuestionService {
         return questionDao.getAllQuestions(authorization);
     }
 
+    // Service funtion for getting all questions based on user id.
     public List<QuestionEntity> getAllQuestionsByUser(String userId, String authorization) throws AuthorizationFailedException, UserNotFoundException {
         UserAuthToken userAuthToken = questionDao.getUserAuthToken(authorization);
         User user = userDao.userFromUuid(userId);
@@ -59,6 +62,7 @@ public class QuestionService {
         return questionDao.getAllQuestionsByUser(userId, authorization);
     }
 
+    // Service function for editing existing question content. Only authorized user can edit the question
     @Transactional(propagation = Propagation.REQUIRED)
     public QuestionEntity editQuestionContent(final QuestionEntity questionEntity, String authorization) throws AuthorizationFailedException, InvalidQuestionException {
         UserAuthToken userAuthToken = questionDao.getUserAuthToken(authorization);
@@ -79,6 +83,7 @@ public class QuestionService {
         return questionDao.editQuestionContent(questionEntity);
     }
 
+    // This service method deletes the question if user is authorized
     @Transactional(propagation = Propagation.REQUIRED)
     public QuestionEntity deleteQuestion(String questionUuid, String authorization) throws AuthorizationFailedException, InvalidQuestionException {
         UserAuthToken userAuthToken = questionDao.getUserAuthToken(authorization);

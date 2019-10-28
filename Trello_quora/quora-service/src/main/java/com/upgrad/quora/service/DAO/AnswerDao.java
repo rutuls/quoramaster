@@ -15,11 +15,13 @@ public class AnswerDao {
     @PersistenceContext
     private EntityManager entityManager;
 
+    // Repository function creates the new answer in db using persist method.
     public AnswerEntity createAnswer(AnswerEntity answerEntity) {
         entityManager.persist(answerEntity);
         return answerEntity;
     }
 
+    // Repository function gets the answer from db based on uuid using NamedQuery.
     public AnswerEntity getAnswerById(final String uuid) {
         try {
             return entityManager.createNamedQuery("answerByUuid", AnswerEntity.class).setParameter("uuid", uuid).getSingleResult();
@@ -28,15 +30,18 @@ public class AnswerDao {
         }
     }
 
+    // Repository function edits the existing answer in db using merge method.
     public AnswerEntity editAnswerContent(final AnswerEntity answerEntity) {
         return entityManager.merge(answerEntity);
     }
 
+    // Repository function deletes the answer in db using remove method.
     public AnswerEntity deleteAnswer(AnswerEntity answerEntity){
         entityManager.remove(answerEntity);
         return answerEntity;
     }
 
+    // Repository function gets the new answer for particular question in db using named query
     public List<AnswerEntity> getAllAnswersToQuestion(QuestionEntity questionEntity){
         try {
             return entityManager.createNamedQuery("getAllAnsToQuest",AnswerEntity.class).setParameter("questionEntity",questionEntity).getResultList();
