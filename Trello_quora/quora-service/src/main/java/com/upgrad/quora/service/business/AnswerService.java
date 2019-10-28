@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class AnswerService {
     @Autowired
@@ -56,5 +58,47 @@ public class AnswerService {
         answerEntity.setUser(existingAnswer.getUser());
         answerEntity.setQuestionEntity(existingAnswer.getQuestionEntity());
         return answerDao.editAnswerContent(answerEntity);
+    }
+
+    //to delete a particular answer
+    @Transactional(propagation = Propagation.REQUIRED)
+    public AnswerEntity deleteAnswer(final String uuid,String authorization) throws AuthorizationFailedException, AnswerNotFoundException {
+        UserAuthToken userAuthToken = questionDao.getUserAuthToken(authorization);
+        AnswerEntity existingAnswer = answerDao.getAnswerById(uuid);
+        if(userAuthToken == null){
+            throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+        }
+        if(userAuthToken.getLogoutAt() != null){
+            throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to delete an answer");
+        }
+        if( existingAnswer == null){
+            throw new AnswerNotFoundException("ANS-001", "Entered answer uuid does not exist");
+        }
+        else {
+            if(userAuthToken.getUser().getRole() == "admin"| existingAnswer.getUser() == userAuthToken.getUser()){
+                return answerDao.deleteAnswer(existingAnswer);//calling delete
+            }
+            else {
+                throw new AuthorizationFailedException("ATHR-003","Only the answer owner or admin can delete the answer");
+            }
+        }
+
+    }
+
+    //gets all the answers for a particular question
+    @Transactional(propagation = Propagation.REQUIRED)
+    public List<AnswerEntity> getAllAnswer(final String uuid,String authorization) throws AuthorizationFailedException, InvalidQuestionException {
+        UserAuthToken userAuthToken = questionDao.getUserAuthToken(authorization);
+        QuestionEntity questionEntity = questionDao.getQuestionById(uuid);
+        if(userAuthToken == null){
+            throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+        }
+        if(userAuthToken.getLogoutAt() != null){
+            throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get the answers");
+        }
+        if (questionEntity == null){
+            throw new InvalidQuestionException("QUES-001","The question with entered uuid whose details are to be seen does not exist");
+        }
+        return answerDao.getAllAnswers(questionEntity); //returning list of answers
     }
 }

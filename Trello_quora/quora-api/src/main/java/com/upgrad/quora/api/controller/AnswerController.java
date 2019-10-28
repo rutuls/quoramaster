@@ -1,5 +1,7 @@
 package com.upgrad.quora.api.controller;
 
+import com.upgrad.quora.api.models.AnswerDeleteResponse;
+import com.upgrad.quora.api.models.AnswerDetailsResponse;
 import com.upgrad.quora.api.models.AnswerRequest;
 import com.upgrad.quora.api.models.AnswerResponse;
 import com.upgrad.quora.service.business.AnswerService;
@@ -14,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -43,5 +47,22 @@ public class AnswerController {
         final AnswerEntity editAnswerContent = answerService.editAnswerContent(answerEntity, authorization);
         AnswerResponse answerResponse = new AnswerResponse().id(editAnswerContent.getUuid()).status("ANSWER EDITED");
         return new ResponseEntity<AnswerResponse>(answerResponse, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE,path = "/answer/delete/{answerId}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<AnswerDeleteResponse> deleteAnswer(@PathVariable("answerId") final String answerUuid, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, AnswerNotFoundException {
+        AnswerEntity answerEntity = answerService.deleteAnswer(answerUuid,authorization);
+        AnswerDeleteResponse answerResponse = new AnswerDeleteResponse().id(answerEntity.getUuid()).status("ANSWER DELETED");
+        return new ResponseEntity<AnswerDeleteResponse>(answerResponse, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET,path = "answer/all/{questionId}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<ArrayList> getAllAnswers(@PathVariable("questionId") String questionId,@RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, InvalidQuestionException {
+        List<AnswerEntity> answers = answerService.getAllAnswer(questionId,authorization);
+        List<AnswerDetailsResponse> responses = new ArrayList<>();
+        for(AnswerEntity a : answers){
+            responses.add(new AnswerDetailsResponse().id(a.getUuid()).answerContent(a.getAns()).questionContent(a.getQuestionEntity().getContent()));
+        }
+        return new ResponseEntity<ArrayList>((ArrayList)responses,HttpStatus.OK);
     }
 }
